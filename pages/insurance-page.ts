@@ -17,4 +17,4 @@ export class InsurancePage {
     async getPageHeading() {
         return this.page.locator(this.headingSelector).textContent();
     }
-}
+} 
