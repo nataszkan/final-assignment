@@ -9,6 +9,6 @@ test.describe('Hoff Insurance Page Tests', () => {
     await insurancePage.goToPage();
 
     const heading = await insurancePage.getPageHeading();
-      expect(heading).toContain('Insurance'); // Adjust based on actual heading text
+    expect(heading).toContain('Insurance');
     });
 });
