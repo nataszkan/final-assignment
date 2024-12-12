@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 
 const baseURL = process.env.BASE_URL || 'https://hoff.is/store2/api/v1/';
 
-
 async function logRequestAndResponse(apiContext, endpoint) {
     console.log('Making request to URL:', baseURL + endpoint);
     const response = await apiContext.get(endpoint);
@@ -39,16 +38,18 @@ test.describe('API tests for Store', () => {
         expect(body.products.length).toBeGreaterThan(0);
     });
 
-    const productIds = [1, 2, 5];
+    test.describe('Fetch details for specific products', () => {
+        const productIds = [1, 2, 5];
 
-    productIds.forEach((productId) => {
-        test(`Fetch details for product with ID ${productId}`, async () => {
-            const endpoint = `price/${productId}`;
-            const { response, body } = await logRequestAndResponse(apiContext, endpoint);
+        for (const productId of productIds) {
+            test(`Fetch details for product with ID ${productId}`, async () => {
+                const endpoint = `price/${productId}`;
+                const { response, body } = await logRequestAndResponse(apiContext, endpoint);
 
-            expect(response.ok()).toBeTruthy();
-            expect(body).toHaveProperty('id', productId);
-            expect(body).toHaveProperty('name');
-        });
+                expect(response.ok()).toBeTruthy();
+                expect(body).toHaveProperty('id', productId);
+                expect(body).toHaveProperty('name');
+            });
+        }
     });
 });
