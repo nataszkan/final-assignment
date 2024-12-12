@@ -2,10 +2,16 @@ import { test, expect } from '@playwright/test';
 
 const baseURL = process.env.BASE_URL || 'https://hoff.is/store2/api/v1/';
 
+
 async function logRequestAndResponse(apiContext, endpoint) {
     console.log('Making request to URL:', baseURL + endpoint);
     const response = await apiContext.get(endpoint);
-    console.log('Status Code:', response.status());
+
+    if (!response.ok()) {
+        console.error(`Request failed with status ${response.status()} for endpoint: ${endpoint}`);
+        throw new Error(`Failed request: ${response.status()}`);
+    }
+
     const body = await response.json();
     console.log('Response Body:', body);
     return { response, body };
