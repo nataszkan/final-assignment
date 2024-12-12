@@ -1,8 +1,18 @@
 import { test, expect } from '@playwright/test';
 
+const baseURL = process.env.BASE_URL || 'https://hoff.is/store2/api/v1/';
+
+async function logRequestAndResponse(apiContext, endpoint) {
+    console.log('Making request to URL:', baseURL + endpoint);
+    const response = await apiContext.get(endpoint);
+    console.log('Status Code:', response.status());
+    const body = await response.json();
+    console.log('Response Body:', body);
+    return { response, body };
+}
+
 test.describe('API tests for Store', () => {
     let apiContext;
-    const baseURL = 'https://hoff.is/store2/api/v1/'; // Ensure trailing slash
 
     test.beforeAll(async ({ playwright }) => {
         apiContext = await playwright.request.newContext({
@@ -16,28 +26,23 @@ test.describe('API tests for Store', () => {
 
     test('Fetch list of all products', async () => {
         const endpoint = 'product/list';
-        console.log('Making request to URL:', baseURL + endpoint);
-
-        const response = await apiContext.get(endpoint);
-        console.log('Status Code:', response.status());
-
-        const body = await response.json();
-        console.log('Response Body:', body);
+        const { response, body } = await logRequestAndResponse(apiContext, endpoint);
 
         expect(response.ok()).toBeTruthy();
+        expect(body).toHaveProperty('products');
+        expect(body.products.length).toBeGreaterThan(0);
     });
 
-    test('Fetch details of a single product by ID', async () => {
-        const productId = 5;
-        const endpoint = `price/${productId}`;
-        console.log('Making request to URL:', baseURL + endpoint);
+    const productIds = [1, 2, 5];
 
-        const response = await apiContext.get(endpoint);
-        console.log('Status Code:', response.status());
+    productIds.forEach((productId) => {
+        test(`Fetch details for product with ID ${productId}`, async () => {
+            const endpoint = `price/${productId}`;
+            const { response, body } = await logRequestAndResponse(apiContext, endpoint);
 
-        const body = await response.json();
-        console.log('Response Body:', body);
-        
-        expect(response.ok()).toBeTruthy();
+            expect(response.ok()).toBeTruthy();
+            expect(body).toHaveProperty('id', productId);
+            expect(body).toHaveProperty('name');
+        });
     });
 });
