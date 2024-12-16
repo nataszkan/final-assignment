@@ -31,24 +31,36 @@ test.describe('API tests for Store', () => {
 
     test('Fetch list of all products', async () => {
         const endpoint = 'product/list';
-        const { response, body } = await logRequestAndResponse(apiContext, endpoint);
+        
+        try {
+            const { response, body } = await logRequestAndResponse(apiContext, endpoint);
 
-        expect(response.ok()).toBeTruthy();
-        expect(body).toHaveProperty('products');
-        expect(body.products.length).toBeGreaterThan(0);
+            expect(response.ok()).toBeTruthy();
+            expect(body).toHaveProperty('products');
+            expect(body.products.length).toBeGreaterThan(0);
+        } catch (error) {
+            console.error('Error fetching products:', error.message);
+            throw error;
+        }
     });
 
     test.describe('Fetch details for specific products', () => {
-        const productIds = [1, 2, 5];
+        const productIds = [1, 3, 8];
 
         for (const productId of productIds) {
             test(`Fetch details for product with ID ${productId}`, async () => {
                 const endpoint = `price/${productId}`;
-                const { response, body } = await logRequestAndResponse(apiContext, endpoint);
 
-                expect(response.ok()).toBeTruthy();
-                expect(body).toHaveProperty('id', productId);
-                expect(body).toHaveProperty('name');
+                try {
+                    const { response, body } = await logRequestAndResponse(apiContext, endpoint);
+
+                    expect(response.ok()).toBeTruthy();
+                    expect(body).toHaveProperty('id', productId);
+                    expect(body).toHaveProperty('name');
+                } catch (error) {
+                    console.error(`Error fetching details for product ${productId}:`, error.message);
+                    throw error;
+                }
             });
         }
     });
