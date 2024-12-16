@@ -19,4 +19,20 @@ test.describe('Store Purchase Flow', () => {
         await expect(confirmationMessage).toContainText('You bought');
         await expect(confirmationMessage).toContainText(PRODUCT_NAME);
     });
+
+    test('Attempt to purchase with invalid quantity (0 or negative)', async ({ page }) => {
+        const storePage = new StorePage(page);
+        await storePage.goToPage();
+    
+        await page.selectOption('#select-product', '1');
+        await page.fill('#buyAmount', '0');
+        await page.click('#button-buy-product');
+        
+        const errorMessage = await page.locator('#message');
+        await expect(errorMessage).toContainText('0 amount');
+    
+        await page.fill('#buyAmount', '-1');
+        await page.click('#button-buy-product');
+        await expect(errorMessage).toContainText('higher than 0');
+    });
 });
