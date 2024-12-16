@@ -11,6 +11,7 @@
     "@axe-core/playwright": "^4.10.1",
     "@playwright/test": "^1.49.0",
     "@types/node": "^22.10.1",
+    "axe-html-reporter": "^2.2.11",
     "axe-playwright": "^2.0.3"
   }
 }
