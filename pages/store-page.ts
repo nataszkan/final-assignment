@@ -7,8 +7,8 @@ export class StorePage {
         this.page = page;
     }
 
-    readonly url = 'https://hoff.is/store/';
-    readonly headingSelector = 'h3';
+    readonly url = 'https://hoff.is/store2/';
+    readonly headingSelector = 'h1';
     readonly productSelectSelector = '#select-product';
     readonly quantityInputSelector = '#buyAmount';
     readonly buyButtonSelector = '#button-buy-product';
